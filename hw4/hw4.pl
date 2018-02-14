@@ -156,14 +156,15 @@ sumlist([A|B],C):- sumlist(B,D), C is D+A.
 
 sumlist2(List,Sum) :- sumlist2(List, 0, Sum).
 sumlist2([], Sum, Sum).
-sumlist2([A|B],RSum,TSum):-TSum is RSum+A,sumlist2(B,TSum,TSum).
+sumlist2([A|B],R,TSum):- Temp is R+A, sumlist2(B, Temp,TSum).
+/* NEEDS TO BE EVALUATED*/
 
 /* Problem 2 Test */
 
-% :- sumlist2([], 0).
-% :- sumlist2([], 1) -> fail ; true.
-% :- sumlist2([1,2,3,4], 10).
-% :- sumlist2([1], 1).
+:- sumlist2([], 0).
+:- sumlist2([], 1) -> fail ; true.
+:- sumlist2([1,2,3,4], 10).
+:- sumlist2([1], 1).
 
 /* Problem 3:
    Write the predicate sumPartialR(N, SumLst), which succeeds as follows:
@@ -182,13 +183,15 @@ sumlist2([A|B],RSum,TSum):-TSum is RSum+A,sumlist2(B,TSum,TSum).
 
 /* Problem 3 Answer */
 
+sumPartialR(1,[1]).
+sumPartialR(N,X):- N>1,M is N-1 , E is (N*(N+1))/2, sumPartialR(M,Y), X=[E|Y].
 
 /* Problem 3 Test */
 
-% :- sumPartialR(1, [1]).
-% :- sumPartialR(1, []) -> fail ; true.
-% :- sumPartialR(2, [3, 1]).
-% :- sumPartialR(6, [21, 15, 10, 6, 3, 1]).
+:- sumPartialR(1, [1]).
+:- sumPartialR(1, []) -> fail ; true.
+:- sumPartialR(2, [3, 1]).
+:- sumPartialR(6, [21, 15, 10, 6, 3, 1]).
 
 
 
@@ -211,25 +214,32 @@ sumlist2([A|B],RSum,TSum):-TSum is RSum+A,sumlist2(B,TSum,TSum).
    You need to add 2 additional clauses.*/
 
 /* Problem 4 Answer */
-
-
+sumPartialL(N,Lst):-sumPartialL(N,N,Lst).
+sumPartialL(1, A, [A]).
+sumPartialL(N,E,[A|B]):- N>1,New is N -1, A=E,Result is E+New, sumPartialL(New, Result,B).
 /* Problem 4 Test */
 
-% :- sumPartialL(1, [1]).
-% :- sumPartialL(1, []) -> fail ; true.
-% :- sumPartialL(6, [6, 11, 15, 18, 20, 21]).
+:- sumPartialL(1, [1]).
+:- sumPartialL(1, []) -> fail ; true.
+:- sumPartialL(6, [6, 11, 15, 18, 20, 21]).
 
 
 /* Problem 5:
    A) Give a formal mathematical definition of:
      a) a relation
-     b) a function 
+     b) a function
    B) Is every function a relation? If false, give a counter example.
    C) Is every relation a function? If false, give a counter example. */
 
 /* Problem 5 Answer: */
 
-
+/*
+  A)
+    a) A relations is the mapping of two sets of data, one being the input, and one being the output. These two sets of data are related in some manner by some rules.
+    b) A function is similar, a mapping of two sets of data, one being input and another being output. However, unlike relations, it is requres that no input relates to more than one output.
+  B) Every function is a relation. True.
+  C) Not every relation is a function. Consider the following mapping {(2,10),(2,8),(3,5)}. In this scenario, the input 2 maps to 2 ouputs, either 10 or 8.
+*/
 
 
 /* Problem 6:
@@ -246,6 +256,7 @@ edge(b,d).
 edge(c,e).
 edge(f,e).
 
+
 /* Using your knowledge of backtracking and the findall predicate, write
    predicates outgoing/2 and incoming/2.
 
@@ -255,15 +266,16 @@ edge(f,e).
 */
 
 /* Problem 6 Answer */
-
+outgoing(X,Y):-findall(_M,edge(X,_Z),Y).
+incoming(X,Y):-findall(_M,edge(_Z,X),Y).
 /* Problem 6 Test */
-% :- outgoing(a,X), X = [b,e,c].
-% :- outgoing(e,X), X = [].
-% :- outgoing(a,X), X = [b,e,c].
-% :- incoming(a,X), X = [b].
-% :- incoming(f,X), X = [].
+:- outgoing(a,X), X = [b,e,c].
+:- outgoing(e,X), X = [].
+:- outgoing(a,X), X = [b,e,c].
+:- incoming(a,X), X = [b].
+:- incoming(f,X), X = [].
 
-% :- outgoing(e,X), X = [a] -> fail ; true.
+:- outgoing(e,X), X = [a] -> fail ; true.
 % :- incoming(e,X), X = [] -> fail ; true.
 
 
@@ -279,7 +291,11 @@ edge(f,e).
 
 /* Problem 7 Answer: */
 
-
+/*
+A homoiconic language is one where the code itself represents its essential datatypes. Like in prolog, our variables and atoms are both the code and quintessential dataypes.
+So yes Prolog is homoiconic.
+A language is fully reflective if it can inspect every aspect of its structure and current state. Very few languages are fully reflective, but prolog does have signifigant forms of reflection.
+*/
 
 /* Problem 8:
    Write a predicate computeS/4. computeS(Op, Arg1, Arg2, Result) succeeds if
@@ -288,14 +304,14 @@ edge(f,e).
 */
 
 /* Problem 8 Answer: */
-
+computeS(Op, X, Y, R):- E=..[Op,X,Y], R is E.
 /* Problem 8 Test: */
-% :- computeS(-, 19, 7, 12).
-% :- computeS(div, 19, 7, 2).
-% :- computeS(div, 19, 7, R), R = 2.
+:- computeS(-, 19, 7, 12).
+:- computeS(div, 19, 7, 2).
+:- computeS(div, 19, 7, R), R = 2.
 
-% :- computeS(/, 19, 7, 2) -> fail ; true.
-% :- catch((computeS(sin, 90, 1, _), fail), error(_Err, _Context), true).
+:- computeS(/, 19, 7, 2) -> fail ; true.
+:- catch((computeS(sin, 90, 1, _), fail), error(_Err, _Context), true).
 
 
 
@@ -308,12 +324,15 @@ edge(f,e).
 
 /* Problem 9 Answer: */
 
-/* Problem 9 Test */
-% :- result([],[]).
-% :- result([+(3,7), mod(104,7),-(5)],[10, 6, -5]).
-% :- result([+(3,7), +(15, -(3,11))],X), X = [10, 7].
+result([],[]).
+result([A|B],[X|Y]):- X is A, result(B,Y).
 
-% :- result([+(3,7), mod(104,7)],[10,13]) -> fail ; true.
+/* Problem 9 Test */
+:- result([],[]).
+:- result([+(3,7), mod(104,7),-(5)],[10, 6, -5]).
+:- result([+(3,7), +(15, -(3,11))],X), X = [10, 7].
+
+:- result([+(3,7), mod(104,7)],[10,13]) -> fail ; true.
 
 
 
@@ -337,16 +356,24 @@ edge(f,e).
 */
 
 /* Problem 10 Answer: */
+d(X,X,R):-R=1.
+d(C,_X,R):-atomic(C),R=0.
+d(C*x,_X,R):-atomic(C),R=C.
+d(-C,X,R):-d(C,X,E), R = -E.
+d(A+B,X,R):-d(A,X,C),d(B,X,D),R = C+D.
+d(A-B,X,R):-d(A,X,C),d(B,X,D),R = C-D.
+d(U*V,X,R):-d(U,X,C),d(V,X,D),R = U*D+V*C.
+d(A^B,X,R):-atomic(B), A = X, C is B-1,R =B*A^C*1.
 
 /* Problem 10 Test: */
-% :- d(x,x,R), R = 1 .
-% :- d(7*x,x,R), R = 7 .
-% :- d(x +2*(x^3 + x*x),x,Result), Result = 1+ (2* (3*x^2*1+ (x*1+x*1))+ (x^3+x*x)*0) .
-% :- d(-(1.24*x -x^3),x,Result), Result = - (1.24-3*x^2*1) .
-% :- d(-(1.24*x -2*x^3),x,Result), Result = - (1.24- (2* (3*x^2*1)+x^3*0)) .
+:- d(x,x,R), R = 1 .
+:- d(7*x,x,R), R = 7 .
+:- d(x +2*(x^3 + x*x),x,Result), Result = 1+ (2* (3*x^2*1+ (x*1+x*1))+ (x^3+x*x)*0) .
+:- d(-(1.24*x -x^3),x,Result), Result = - (1.24-3*x^2*1) .
+  :- d(-(1.24*x -2*x^3),x,Result), Result = - (1.24- (2* (3*x^2*1)+x^3*0)) .
 
 % Pay careful attention to why this fails.
-% :- d(x +2*(x^3 + x*x),x,Result), Result = 1+ (2* (3*x^(3-1)*1+ (x*1+x*1))+ (x^3+x*x)*0) -> fail ; true.
+:- d(x +2*(x^3 + x*x),x,Result), Result = 1+ (2* (3*x^(3-1)*1+ (x*1+x*1))+ (x^3+x*x)*0) -> fail ; true.
 
 
 
@@ -372,11 +399,10 @@ edge(f,e).
 */
 
 /* Problem 11 Answer: */
-
+swap(leaf(X),leaf(X)).
+swap(tree(X,Y),T):-swap(Y,Z),swap(X,W),T=tree(Z,W).
 
 /* Problem 11 Test: */
-% :- swap( tree( tree(leaf(1), leaf(2)), leaf(4)), T), T  =  tree( leaf(4), tree(leaf(2), leaf(1))).
-% :- swap(leaf(1), leaf(1)).
-% :- swap(tree(leaf(1), leaf(2)), tree(leaf(1), leaf(2))) -> fail ; true.
-
-
+:- swap( tree( tree(leaf(1), leaf(2)), leaf(4)), T), T  =  tree( leaf(4), tree(leaf(2), leaf(1))).
+:- swap(leaf(1), leaf(1)).
+:- swap(tree(leaf(1), leaf(2)), tree(leaf(1), leaf(2))) -> fail ; true.
