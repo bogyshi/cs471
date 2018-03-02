@@ -1,0 +1,190 @@
+﻿Team members: Alexander Van Roijen, John Reynolds
+Homework Assignment 6
+YOU NEED TO READ 
+Chapter 3: pgs 115-166,
+Chapter 8: pgs 388-398
+Chapter 14: pgs 726, 739-743
+
+
+THIS ASSIGNMENT MAY BE DONE INDIVIDUALLY OR IN TEAMS OF UP TO 3 (no more than 3 members) .
+
+
+DUE 11:59pm on Thur (March 1)
+
+
+SUBMIT a txt. CODE FILES MUST be tar'd (no single submission like the .pl assignment). It would be a good idea if you copied the questions from the text book before your answers. 
+
+
+ALL GROUP MEMBERS MUST BE LISTED ON THE TOP OF THE file in their header.  All members must submit the SAME assignment.  If you use sources (including the textbook) for you answer -- you need to reword and cite the source.  Answers should be short and to the point.
+
+
+1 Page 167 exercise 3.1
+THIS IS FOR C
+1. At the time of designing the programming language.
+2. During compilation time, variable names are bound to objects
+3. During a time when the language is being fitted to a particular machine, different machines allow different maximum int sizes, ex 32 vs 64 bit
+4. In C there are no subroutines, so the environment is the same as when it is created, so during compile time
+5. During linking time
+6. Due to dynamic memory and data, this would be determined during run time 
+
+
+2 In assignment 1 problems 2 and 3 you studied  iterative and functional versions of the gcd function.  Download and compile gcdR.c to assembly code on your machine: Use the command gcc -S gcdR.c You can run this remotely on the department machines by ssh remote.cs.binghamton.edu -l<your id>
+Draw the activation record for gcdR() based on the assembly code generated.   Field's offset should be consistent with the assembly code. 
+______________________________________________________________________________
+|                i=-8%rbp                        | arguments
+|                j=-4%rbp                        | arguments
+|                returnAdress=0%rbp                |return address
+----------------------------------------------------------------------------------------------------------------------------
+Which way does the program stack grow? (i.e. towards higher addresses or lower addresses?)
+It grows from lower address to higher addresses.
+Annotated the gcdR.s file.  Indicate all the instruction that read, write, "create" or "delete" the stack memory.  Name the fields affected by instruction.  
+e.g
+31::  movl    $13, -4(%ebp) -- copies the value to the "n" argument field in the AR.
+
+
+  1         .file   "gcdR.c"
+  2         .text
+  3         .globl  gcdR
+  4         .type   gcdR, @function
+  5 gcdR:
+  6 .LFB0:
+  7         .cfi_startproc
+  8         pushq   %rbp
+  9         .cfi_def_cfa_offset 16
+ 10         .cfi_offset 6, -16
+ 11         movq    %rsp, %rbp      # Move current base pointer to current stack pointer
+ 12         .cfi_def_cfa_register 6
+ 13         subq    $16, %rsp       # Subtract 16 from current stack pointer
+ 14         movl    %edi, -4(%rbp)  # Store argument i in edi register within AR
+ 15         movl    %esi, -8(%rbp)  # Store argument j in esi register within AR
+ 16         cmpl    $0, -8(%rbp)    # Compare j with 0
+ 17         jne     .L2             # Jump to L2 if j is not 0
+ 18         movl    -4(%rbp), %eax  # Store i in eax for return
+ 19         jmp     .L3
+ 20 .L2:    
+ 21         movl    -4(%rbp), %eax  # Store return value into i
+ 22         cltd    
+ 23         idivl   -8(%rbp)        # Modulo operation between i & j
+ 24         movl    -8(%rbp), %eax  # Store return value of this operation into eax
+ 25         movl    %edx, %esi      # \
+ 26         movl    %eax, %edi      #  \
+ 27         call    gcdR            #   Prepare recursive call
+ 28 .L3:    
+ 29         leave
+ 30         .cfi_def_cfa 7, 8
+ 31         ret
+ 32         .cfi_endproc
+ 33 .LFE0:  
+ 34         .size   gcdR, .-gcdR
+ 35         .ident  "GCC: (Debian 6.3.0-18) 6.3.0 20170516"
+ 36         .section        .note.GNU-stack,"",@progbits
+
+
+
+
+3 Now compile gcdR.c to assembly code on your machine using the command "gcc -O2 -S gcdR.c". Compare the assembly file created using optimization switch, -O2, with the assembly file created without optimization(above #2).  Pay attention to how gcd's recursion is "implemented".  How are they different?
+
+
+Assembly lines are reduced by using some shortcuts. Instead of creating a stack frame and handling that, it simply uses stored register values to compare and conditionally jump. 
+
+
+4 Many storage-management algorithms maintain a list of free blocks.  Here are two different algorithms, first fit and best fit, used to search this list and return a block of the appropriate size.  Which strategy, if either, will result in lower external fragmentation?  What does external fragmentation depend on?
+
+
+There is lower external fragmentation using the best fit method, as it may perform the same as first fit, but it could also result in perfect fits or more optimal fits that reduce the overall external fragmentation. External fragmentation depends on the amount of free space available over however many not contiguous blocks. Using a first fit algorithm will result in different orderings of the memory to result in different degrees of fragmentation.
+
+
+5 What is the complexity of using first fit algorithm to allocate blocks?  Briefly explain an algorithm to speed up the allocation. What is the complexity of this modification?
+
+
+First fit takes O(n) time on average as we need to find the first open block of the correct size available. If the list was sorted in ascending order, we could use a binary search to find a free block of the appropriate size in O(log(n)) time. The added complexity would be maintaining a sorted list of free size blocks and their according sizes.
+
+
+6 What are two principal tradeoff between reference counts and tracing strategy used in garbage collecting?
+Reference counts are not a perfect answer to garbage collection, as if we have a circular dependency, then there will be lost memory, even though, there is no pointer accessing the data.
+The tracing strategy is perfect, in that in can collect circular dependencies, unlike reference counts. On the downside, the time complexity is higher with tracing as it depends on the size of the heap.
+
+
+7 Page 398 cyu # 26.  YOU ANSWER should be short and concise but complete.
+
+
+Garbage is unreachable objects. It is created when an object falls out of scope and there are no pointers to the data. It is a problem, as if it is not collected, our memory is being taken up by unnecessary information that could be used for other variables or active data. Garbage can also cause fragmentation. Reference count is simplistic and when a counter reaches zero for number of pointers referencing the object, it is able to be collected. Downside it isnt perfect due to a failure to recycle circular dependencies. Meanwhile tracing is complete, but takes longer.
+
+
+8 Page 124 CYU( check your understand) #4, page 135 CYU #12 and page 167 exercise 3.4.
+1. Lifetime of a variable is how long an object is available in memory, while visibility is the time where this same object can be referenced. For example, local variables in main, have a lifetime of the duration of the program, but may not be visible when going to another function. 
+2. The time of which a name-to-object binding is active
+3.    1. You have a global variable, and within a function, you define another variable of the same name, thus hiding the global variable. (live but not in scope)
+   2. In python, you can have nested functions, that have references to variables of the same name, and hide outer function variables. (live but not in scope)
+   3. In java, we can have a class with an instance variable that can be referenced by a class method, however that same class method can hide it by declaring another variable of the same name within its body.
+
+
+9 Page 169 exercise 3.7.
+1. Brad is not freeing memory, and thus each time he builds a list and then reverses it, he creates two large lists, but does not free the non reversed list.
+
+
+b) Janet will say that it is because he frees T’s memory, where all the data that was set during reverse. Thus, when he tries to access it later, it is accessing corrupted memory that has no value any longer as it is not malloced.
+
+
+10 Page 172 Exercise 3.16
+        Prints 5, newline, 7. a would be statically allocated as it has the static keyword prior to its definition. Local variables and arguments are likely put on the stack, which includes c, n, and d. All static variables in C# are put on the heap, so that means a would be put on the heap as it is a static variable
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+11 Consider the following pseudo code:
+
+
+   x : integer := 1
+   y : integer := 20
+   procedure add()
+         x := x + y
+   procedure second(P : procedure)
+         x : integer := 2
+         P()
+   procedure first()
+         y : integer := 3
+         second(add)
+
+
+   first()
+   write integer(x)
+
+
+What does this program print if the language uses static scoping?
+1
+Explain why 4 is printed out if the language uses dynamic scoping with deep binding.
+In deep binding, the environment is bounded at the time the procedure is passed as an argument. So when it is passed in the first call, y is 3 and x is 1. So when it executes it prints out 4.
+Explain why 1 is printed out if the language uses dynamic scoping with shallow binding.
+Shallow binding, the environment is bound when the function is actually called. So at the time it is called. X is 2 and y is 3 so the sum is 5. However, when we write X that value was not stored, and the global value of one is used instead.
+
+
+12 Page 768 exercise 14.11 (perl program)
+Due to how perl 5 is an interpretive language, it means that upon the first pass of the function, it used the outer value of lex and prints that as it does not know it defines it within this subroutine. So on the first pass, subroutines very much act like its part of the original function until its been passed through once. Afterwards, it knows that here is a locally defined variable, and will print that value within the subroutine. Hence 2 is printed out the first time but 5 is printed the second time as well as any other future calls.
+
+
+13 pg. 768 ex 14.13.   I have slightly modified the code for this problem (ruby code)
+Before adjustment:
+We know proc allows us to access local variables in differing context. So, since y is visibly, we can alter is value to 99 before printing it out. Further, the x passed into foo by the outer function call, at 3, is also available and will be printed by the proc block as well.
+After commenting out y=2:
+As mentioned, proc object are blocks of code that have been bound to a set of local variables. However, if we comment out the declaration of the local variable outside of the proc block without any others to take its place, then it reaches the statement y=99 without any local variable y in scope. Thus is throws an error complaining about an undefined local variable y.
