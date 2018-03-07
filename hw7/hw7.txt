@@ -1,4 +1,4 @@
-Eric Olsen
+Eric Olsen, Alexander Van Roijen
 
 1)These statements are not contradictory. Left associativity as explained in
   6.1.1 determines the order in which operators are applied, which does not
@@ -14,6 +14,11 @@ associativity and precedence, but the compiler can decide whether to evaluate
 its frequency of use eclipses other design considerations that should, in my
 opinion take higher precedence. Clarity of meaning being one thing that should
 take higher precedence.
+3) Ale.Vs answer: I find it a fine idea. Orthogonality attempts to make a
+language understandable with few exceptions. When we want to compare two values
+we want to say are they "equal". However, we also want to say a variable is equal
+to a statement or expression. Making both operators use similar notation makes sense
+intuitively.
 
 4)a)
   int b = (a++ || ++a) >= (a++ && ++a); | a = 0, b = ?
@@ -26,6 +31,7 @@ expressions since first expression is false
 since first expression is true
   int b = 1 >= 1 | a = 4, b = ?
   int b = 1 | a = 4, b = 1
+
 
 4)b)
   int b = (a++ || ++a) >= (a++ && ++a); | a = 0, b = ?
@@ -52,10 +58,10 @@ loop.
 7) In treeModule.py
 
 9) Case in which macro is faster
-   
+
    #define help_foo(n) foo(n)
    #define foo(n) (n==1) ? 1 : help_foo(n-1)
-   
+
    inline in_foo(n){return (n==1) ? 1 : foo(n-1);}
 
    The compiler will not inline in_foo despite the use of the inline keyword
@@ -79,4 +85,3 @@ a function or type that can handle values regardless of their type.
         classifying characteristics of the discrete types is that they are
 countable, and that they have defined iteration (i.e. they have a definite
 method of going from one element to the next).
-    
