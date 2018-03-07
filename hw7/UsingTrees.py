@@ -68,22 +68,36 @@ def prettyPrint(trees):
 #  1
 #    2
 
+
 def treeGenerator(start,end):
     treeList = []
-    if start <= end: #if we arent at maximum depth
+    if (start <= (end)): #if we arent at maximum depth
         for root in range(start,end+1):
             curTree = TreeModule.Tree(root, None,None) #we create, in an inorder fashion, our tree possiblities recursively.
             leftList = treeGenerator(start,root-1) #go left , go back to the previous line, and make a new parent, and continue the process until we have made a treee that goes entirely left.
             rightList = treeGenerator(root+1,end)
-            for leftTree in leftList:
-                curTree.left = leftTree
+            if(not leftList and not(not rightList)):
                 for rightTree in rightList:
                     curTree.right = rightTree
                     treeList.append(curTree)
+            elif(not rightList and not(not leftList)):
+                for leftTree in leftList:
+                    curTree.left = leftTree
+                    treeList.append(curTree)
+            else:
+                for leftTree in leftList:
+                    curTree.left = leftTree
+                    for rightTree in rightList:
+                        curTree.right = rightTree
+                        treeList.append(curTree)
     else: #at max depth so no more recursion, just leefs
         treeList.append(None)
 
-    yield treeList
+    return treeList
+    #for x in treeList:
+    #    yield x
 
 trees = treeGenerator(1,3)
+for x in trees:
+    print(x)
 prettyPrint(trees)
