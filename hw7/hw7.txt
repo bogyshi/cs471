@@ -1,0 +1,82 @@
+Eric Olsen
+
+1)These statements are not contradictory. Left associativity as explained in
+  6.1.1 determines the order in which operators are applied, which does not
+    necessarily determine the evaluation order of the operands. For example,
+The expression 5-4-3*2 would be applied as ((5-4)-(3*2)) as determined by
+associativity and precedence, but the compiler can decide whether to evaluate
+5-4 or 3*2 first.
+
+2) &i is an r-value, which you cannot take the address of. Thus &(&i) is never valid.
+
+3) The rationale for the '=' and '==' operators provided by the the C language
+   designers seems weak. The idea that an operator's length should be based on
+its frequency of use eclipses other design considerations that should, in my
+opinion take higher precedence. Clarity of meaning being one thing that should
+take higher precedence.
+
+4)a)
+  int b = (a++ || ++a) >= (a++ && ++a); | a = 0, b = ?
+  int b = (0 || ++a) >= (a++ && ++a); | a = 1, b = ?
+  int b = (0 || 2) >= (a++ && ++a); | a = 2, b = ?
+  int b = (0 || 2) >= (2 && ++a); | a = 3, b = ?
+  int b = (0 || 2) >= (2 && 4); | a = 4, b = ? //(0 || 2) evaluates both
+expressions since first expression is false
+  int b = 1 >= (2 && 4); | a = 4, b = ?//(2 && 4) evaluates both expressions
+since first expression is true
+  int b = 1 >= 1 | a = 4, b = ?
+  int b = 1 | a = 4, b = 1
+
+4)b)
+  int b = (a++ || ++a) >= (a++ && ++a); | a = 0, b = ?
+  int b = (a++ || ++a) >= (a++ && 1); | a = 1, b = ?
+  int b = (a++ || ++a) >= (1 && 1); | a = 2, b = ?
+  int b = (a++ || 3) >= (1 && 1); | a = 3, b = ?
+  int b = (3 || 3) >= (1 && 1); | a = 4, b = ? //(1 && 1) evaluates both
+expressions since left expression is true
+  int b = (3 || 3) >= 1; | a = 4, b = ? //(3 || 3) only evaluates left
+expression since left expression is true
+  int b = 1 >= 1; | a = 4, b = ?
+  int b = 1; | a = 4, b = 1
+
+5) These two implementations are not identical. This can be seen if anything
+   accessing a[i] is added to the bodies of the loops. The while loop
+updates i immediately after checking a[i] against 0, whereas the for loop
+doesn't update i until after the body of the loop has been finished. Therefore,
+if you were to add anything to both loop bodies, each iteration of the while
+loop would access an element one index further into the array than the for
+loop.
+
+6) In fact.rb
+
+7) In treeModule.py
+
+9) Case in which macro is faster
+   
+   #define help_foo(n) foo(n)
+   #define foo(n) (n==1) ? 1 : help_foo(n-1)
+   
+   inline in_foo(n){return (n==1) ? 1 : foo(n-1);}
+
+   The compiler will not inline in_foo despite the use of the inline keyword
+because the function is recursive,and so the function overhead will make this
+slower than the macro expansion version.
+
+10) 2)Strongly Typed - A language that prohibits an operation from being
+    performed on an object that does not support that operation
+    Statically Typed - A language is statically typed if it is strongly typed
+and also does type checking at compile time
+    C is not strongly typed on the basis that it will implicitly convert from
+some types to other types (i.e. int to long), and the fact that pointers can be
+used to bypass type checking in some cases.
+    9) Polymoprhism is the idea that the same piece of code can handle multiple
+       distinct object types. Parametric polymorphism is when the piece of code
+will run correctly regardless of the type passed to it. Subtype polymorphism is
+when the code will run correctly so long as the object being dealt with is the
+expected type or a subtype of the expected type. A generic in polymorphism is
+a function or type that can handle values regardless of their type.
+    10) The discrete types are a proper subset of the scalar types. The main
+        classifying characteristics of the discrete types is that they are
+countable, and that they have defined iteration (i.e. they have a definite
+method of going from one element to the next).
+    
