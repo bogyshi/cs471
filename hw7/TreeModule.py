@@ -13,7 +13,7 @@ class Tree:
 
         The constructor for a tree
         self.xxx=vvv, creates an instance variable, xxx, with the value, vvv.
-        "The first argument (called self by convertion) of a method references 
+        "The first argument (called self by convertion) of a method references
         the instance object being processed;"
 
         """
@@ -21,6 +21,7 @@ class Tree:
         self.label = label
         self.left = left
         self.right = right
+        self.isMarked=0
 
 
     def __repr__(self):
@@ -64,7 +65,7 @@ class Tree:
 
         if self.right is not None:
             for x in self.right:
-                yield x   
+                yield x
 
     def postorder(self):
         if self.left is not None:
@@ -73,7 +74,7 @@ class Tree:
 
         if self.right is not None:
             for x in self.right:
-                yield x   
+                yield x
 
         yield self.label
 
@@ -93,6 +94,7 @@ def tree_factory(seq):
         return None
     i = n // 2  # use 1//2 instead of 1/2 to get the truncating behavior
     return Tree(seq[i], tree_factory(seq[:i]), tree_factory(seq[i+1:]))
+
 
 
 def print_tree_indented(tree, level=0):

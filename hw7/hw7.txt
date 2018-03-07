@@ -56,6 +56,7 @@ loop.
 6) In fact.rb
 
 7) In treeModule.py
+8) in usingTrees.py
 
 9) Case in which macro is faster
 
@@ -67,6 +68,16 @@ loop.
    The compiler will not inline in_foo despite the use of the inline keyword
 because the function is recursive,and so the function overhead will make this
 slower than the macro expansion version.
+
+  Case in which inline is faster:
+  Due to the lazy evaluaton of macros, there is a cost of bookkeeping,
+  so if a macro
+  #define foo(n) (n==1) ? 1 : n*n-1
+  is called a million times, before any of its results are required, there is
+  a heavy overhead associated with it.
+  meanwhile an inline function
+  inline foo(n) {return (n==1) ? 1 : n*(n-1)}
+  is eager and would require no overhead.
 
 10) 2)Strongly Typed - A language that prohibits an operation from being
     performed on an object that does not support that operation

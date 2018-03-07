@@ -68,36 +68,69 @@ def prettyPrint(trees):
 #  1
 #    2
 
+def createTree(nodeDepth,node):
+    if(nodeDepth>0):
+        node.left=createTree(nodeDepth-1,TreeModule.Tree(nodeDepth-1,None,None))
+        node.right=createTree(nodeDepth-1,TreeModule.Tree(nodeDepth-1,None,None))
+
+    return node
+
+def treeGenerator2(nodesLeft,head,nextNode):
+    print(nodesLeft)
+    if(nodesLeft>0):
+        nextNodeLeft =TreeModule.Tree(nodesLeft,None,None)
+        nextNode.left = nextNodeLeft
+        treeGenerator2(nodesLeft-1,head,nextNodeLeft)
+        nextNodeRight=TreeModule.Tree(nodesLeft,None,None)
+        nextNode.right = nextNodeRight
+        treeGenerator2(nodesLeft-1,head,nextNodeRight)
+    else:
+        print("yuh")
+        yield head
+        #treeList.append(None)
+    #for x in treeList:
+    #    yield x
+
+def makeSubTree(ogTree,nodesLeft,node):
+    if(nodesLeft>0):
+        node.left=makeSubTree(ogTree.left,nodesLeft-1,TreeModule.Tree(nodesLeft-1))
+        node.right=makeSubTree(ogTree.right,nodesLeft-1,TreeModule.Tree(nodesLeft-1))
+    yield node
+
+def callTreeGen(nodesLeft):
+    treeList=[]
+
+    treeHead = TreeModule.Tree(nodesLeft,None,None)
+    treeHead = createTree(nodesLeft,TreeModule.Tree(nodesLeft,None,None))
+    for x in makeSubTree(treeHead,nodesLeft,TreeModule.Tree(nodesLeft,None,None)):
+        return x
 
 def treeGenerator(start,end):
     treeList = []
     if (start <= (end)): #if we arent at maximum depth
         for root in range(start,end+1):
+            print(start)
+            print(end)
+            print(root)
             curTree = TreeModule.Tree(root, None,None) #we create, in an inorder fashion, our tree possiblities recursively.
             leftList = treeGenerator(start,root-1) #go left , go back to the previous line, and make a new parent, and continue the process until we have made a treee that goes entirely left.
             rightList = treeGenerator(root+1,end)
-            if(not leftList and not(not rightList)):
+            for leftTree in leftList:
+                curTree.left = leftTree
                 for rightTree in rightList:
                     curTree.right = rightTree
                     treeList.append(curTree)
-            elif(not rightList and not(not leftList)):
-                for leftTree in leftList:
-                    curTree.left = leftTree
-                    treeList.append(curTree)
-            else:
-                for leftTree in leftList:
-                    curTree.left = leftTree
-                    for rightTree in rightList:
-                        curTree.right = rightTree
-                        treeList.append(curTree)
+            if(not treeList):
+                treeList.append(curTree)
     else: #at max depth so no more recursion, just leefs
-        treeList.append(None)
+        print("makes sense")
+        #treeList.append(None)
 
     return treeList
     #for x in treeList:
     #    yield x
 
-trees = treeGenerator(1,3)
-for x in trees:
-    print(x)
+trees = callTreeGen(2)
+#for x in trees:
+#    print(x)
 prettyPrint(trees)
