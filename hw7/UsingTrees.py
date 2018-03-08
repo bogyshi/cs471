@@ -67,7 +67,7 @@ def prettyPrint(trees):
 #0
 #  1
 #    2
-
+'''
 def createTree(nodeDepth,node):
     if(nodeDepth>0):
         node.left=createTree(nodeDepth-1,TreeModule.Tree(nodeDepth-1,None,None))
@@ -129,8 +129,32 @@ def treeGenerator(start,end):
     return treeList
     #for x in treeList:
     #    yield x
+'''
+def treeGenerator2(start,end):
+    treeList = []
+    if(start>end):
+        treeList.append(None)
+        return treeList
+    else:
+        for root in range(start,end+1):
+            leftList = treeGenerator2(start,root-1)
+            rightList = treeGenerator2(root+1,end)
+            for leftTree in leftList:
+                lT = leftTree
+                for rightTree in rightList:
+                    rT = rightTree
+                    rootNode = TreeModule.Tree(root,None,None)
+                    rootNode.left=lT
+                    rootNode.right=rT
+                    treeList.append(rootNode)
 
-trees = callTreeGen(2)
+    return treeList
+
+def treeGenerator(start,end):
+    for n in treeGenerator2(start,end):
+        yield n
+
+trees = treeGenerator(1,3)
 #for x in trees:
 #    print(x)
 prettyPrint(trees)
