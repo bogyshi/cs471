@@ -1,0 +1,129 @@
+Assignment due Friday, March 16
+You may work groups of 1, 2 or 3 members.  EACH team member must submit the assignment.
+In the header for the assignment, please indicate your partners. Example.
+
+CS471 - Programming Language
+Author: Jin, Li (ljin50), Canino, Anthony (acanino1)
+hw 8
+
+Written answer should be written in a plain text file .   Code and answer files should be tar'd. 
+
+REMEMBER if you find answers in the textbook or on-line you must reword and cite the reference.  THANKS
+
+
+Reading:
+ 
+ Chapter 7
+     CYU: 1-12, 13-21, 26-35,
+ Chapter 8
+     CYU: 1-7, 8-16,  19-24, (review 25-33)
+
+Please your answers should be clear, short and to the point. 
+
+1.    page 331 cyu 25
+Unification: All related constraints are combined and related to each other such that there are proper mappings between all constraints.
+ML uses this during its compilation process to map all constrains correctly based on the code provided.
+
+2.    page 342 cyu 26
+The difference between implicit and explicit polymorphism. Explicit polymorphism allows the programmer to specify the type of the arguments
+of a subroutine or function so there can be static type checking during compile time for the arguments. Implicit on the other hand, will allow the type
+of an expression to be unspecified after inference.
+
+3.    page 342 cyu 33
+C#s compiler is smarter than javas in that it can recognize the primitive type. Meanwhile Java, striving to maintain backwards compatability
+can not tell this difference and requires this is explicitly declared as the Integer type.
+
+4.    Here are some type and variable declarations in C syntax:
+
+
+        typedef char* String1;
+        typedef char* String2:
+
+        String1 a;
+        String2 b, c;
+        String2 d;
+
+    State which variables are type equivalent under (a) structural equivalence, (b) strict name equivalence, and (c) the actual C equivalence algorithm.
+Structural equivalence: a,b,c,d. strict name equivalence: b,c,d. C equiavlence algo: a,b,c,d
+
+5.    Given the following C++ declaration,
+
+        double* dp = new double(3);
+        void* vp;
+        int* ip;
+    which of the following assignments does the compiler complain about?
+
+  vp = dp;
+  dp = vp; // invalid conversion from void pointer tp double *
+  ip = dp; //cannot convert double to int *
+  dp = ip; //cannot convert int * to double *
+  ip = vp; //invalid concersion from void * to int *
+  
+  ip = (int*) vp;
+  ip = static_cast<int*>(vp);
+  ip = static_cast<int*>(dp); //invalid static cast from type double * to int *
+  ip = reinterpret_cast<int*>(dp);
+
+    Briefly explain the behavior of the compiler.  Will *ip ever have the value 3 after one of the assignments to ip ?
+The compiler will do static type checking. C++ wants static casts for most lines but, it will allow a void * to be assigned to a double pointer as void pointers are special.
+void pointers can be assigned to any pointer. *ip will never have the value of 3 after any of these assignments.
+
+6.    page 346 exercise 7.17
+
+Bar is a subclass of foo,meaning bar inherets from foo. The print function expects a list of all foo pointers. If we were to allow a list of all derived classes as well,
+we will receieve run time errors if we try to access private members of the higher base class from the bar types, which will be allowed by the compiler as it thinks its receiving
+a list of foo pointers.
+
+7.    page 346 exercise 7.18
+They are pretty similar, both allow amibguous types to be passed and determined by the compiler during instatiation. Templates, however, can use recursion, are safer due to better
+type checking practices, and are slower than the compiled inline macros.
+
+8.    page 358 CYU 1
+Struct tags in C are ,in general, a record making syntax.
+"
+One of the peculiarities of the C type system is that struct tags are not exactly
+type names. In Example 8.1, the name of the type is the two-word phrase
+struct element . We used this name to declare the element_yielded field
+of the second struct in Example 8.3. To obtain a one-word name, one can say
+typedef struct element element_t , or even typedef struct element
+element : struct tags and typedef names have separate name spaces, so the
+same name can be used in each. C++ eliminates this idiosyncrasy by allowing
+the struct tag to be used as a type name without the struct prefix; in effect, it
+performs the typedef implicitly.
+" ~ Programming Language Pragmatics, page 353
+
+9.    page 405 exercise 8.12
+Each isntance of this struct will take up 8 bytes due to padding on a 64 bit machine. Thus each entry in the array advances the memory location by 8 bytes.
+so 1000 + 8*10+8*10 + 8*10 + 7 * 8 = 1000+240+56 = 1296.
+
+10.    page 407 exercise 8.16 (Reading C type declarations)
+
+double *a[n]; a is an n element array of pointers to doubles , Programming language pragmatics page 386
+double (*b)[n]; b is a pointer to an n element array of doubles, programming language pragmantics page 386
+double (*c[n])(); This is a function defintion that returns a n element array of pointers to doubles that takes no arguments
+double (*d())[n]; This declares a pointer of double functions called d in a list of size n
+
+
+
+
+
+11.    Suppose this C++ code
+
+        const int k = ???; // you need to figure out the value of ???
+        int * i = 0;
+        struct A {
+            int x[k];
+        };
+        A* a = 0;
+        printf( "%d  %d  %d %d  %d  %d  ",
+                 i+1, i+k, k, a+k, &(a[9]), &(a[9]) - (a+1)  );
+
+    outputs the values for the first two expressions
+         4  12
+    What are its remaining outputs?  Briefly explain how the output is obtained.  (Hint: pay attention to coercion.)
+    Note the following is all caused by the print format coercing the print formats of all data into the digit format.
+    k is 3 and its remaining outputs are 3 36 108 and 8. We set a pointer to address zero. asking for i+1 will move one unit size of u, which is int, size 4 bytes, so we get 4.
+    i+k forces i to an intvalue of 1 and adds it to 3 to get 4. k is then printed, which is 3. a+k, will move the pointer of a 3 units of size of A, which is 12, so 0 + 3*12 = 36.
+    a[9] is efficetively a+9, so we get 0 + 9 * 12 = 108. finally &a[9] - (a+1) takes their addresses and takes their difference but coerces the result to the offset between the two
+    values rather than the address value, so we get 108-12 = 96 which is 8 units of size 12 so we get 8.
+
