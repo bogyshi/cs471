@@ -79,6 +79,11 @@ ack( m,n ) =	ack( m-1, ack( m, n-1 ) )      	if n >0 and m > 0
 
 Problem 1 ANSWER:
 
+> ack :: (Num a, Ord a) => a->a->a
+> ack 0 n = n+1
+> ack m 0 = ack (m-1) 1
+> ack m n = ack (m-1) (ack (m) (n-1)) 
+
 Problem 2
 Define a primitive recursive function 'merge' that given two sorted lists returns 
 a sorted list with all the unique elements from lists.  This can be used to help solve
@@ -88,7 +93,16 @@ e.g.
    [1,3,7,8,9,99,100]
 
 
-Problem 2 ANSWER: 
+Problem 2 ANSWER:
+
+> merge :: (Num a, Ord a) => [a] -> [a] -> [a]
+> merge [] [] = []
+> merge (a:as) [] = a:as
+> merge [] (b:bs) = b:bs
+> merge (a:as) (b:bs)
+>   | a>b =  b:(merge (a:as) bs)
+>   | a<b = a:(merge as (b:bs))
+>   | otherwise = a:(merge as bs)
 
 Problem 3:
 Given the following recursive polymorphic tree data type:
@@ -106,6 +120,11 @@ of your code.
 
 Problem 3 ANSWER:
 
+> toList :: Tree a -> [a]
+> toList Leaf = []
+> toList (Branch a b c) = (a:(toList b))++(toList c)
+
+This is an in order traversal, time complexity is O(n)
 Problem 4:
 Using the Tree data type above define toTree, which converts a list of
 values to a binary tree of the values of the list. 
@@ -128,6 +147,8 @@ What is the most general type of the list input?   What is the most general type
 of 'toTree'?
 
 Problem 4 ANSWER:
+use built in function to grab length of list, and another function to split a list at an index
+
 
 Problem 5: 
 Implement a function which returns mirror of a Tree a.
@@ -183,8 +204,8 @@ Notation (this is a repeat of problem 8 from HW 10 homework)
 
 Problem 7 Answer:
 
-  > replicate' :: (Eq a, Num a) => [a] -> [a]
-
+> replicate' :: (Eq a, Num a) => [a] -> [a]
+> replicate' (a:as) = [i  | i <- [a,a..], (length i) == a]
 
 Problem 7 ANSWER:
 
