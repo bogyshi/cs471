@@ -222,7 +222,6 @@ Notation (this is a repeat of problem 8 from HW 10 homework)
 Problem 7 Answer:
 
 
-> replicate' :: (Eq a, Num a) => [a] -> [a]
 > replicate' (a:as) = (take a [i  | i <- [a,a..]]) ++ (replicate' as)
 > replicate' [] = []
 
@@ -235,6 +234,8 @@ and adds one with another.
     > sumLsts [[1,1,1], [1,10,20], [-3, -4, -2]] [[3,5,6],[2,3,4],[2,3,2]]
     > [[4,6,7],[3,13,24],[-1,-1,0]]
 
+> sumLsts (a:as) (b:bs) = (take 1 [(+) e f | e<-a,f<-b]) ++ (sumLsts as bs)
+> sumLsts _ _ = []
 
 Use list comprehension notation to solve this problem. You may use 'zip' in
 your solution.
@@ -256,8 +257,8 @@ What is the most general type of sumSingleLsts?
 
 Problem 9 ANSWER:
 
-> sumSingleLst :: (Num a) => [[a]] -> [[a]f<-] -> [a]
-> sumSingleLst b:bs c:cs = [e + f | e<-b , f<-c]
+> sumSingleLst :: (Num a) => [[a]] -> [[a]] -> [a]
+> sumSingleLst (b:bs) (c:cs) = [e + f | e<-b , f<-c]
 
 Problem 10: (from http://en.wikipedia.org/wiki/Thue%E2%80%93Morse_sequence )
 In previous homework 10 problem 7 you wrote a primitive recursive function to
