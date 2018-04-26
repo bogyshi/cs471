@@ -150,7 +150,9 @@ Problem 4 ANSWER:
 use built in function to grab length of list, and another function to split a list at an index
 
 > toTree :: [a] -> Tree a
-> toTree (a:as) = Branch a Leaf Leaf
+> toTree (a:as) = Branch a (toTree x) (toTree y) where (x,y) = splitAt (div (length as) 2) as
+> toTree [] = Leaf
+
 
 
 Problem 5:
@@ -210,6 +212,9 @@ https://en.wikibooks.org/wiki/Haskell/The_Functor_class
 
 Problem 6 ANSWER:
 
+> instance Functor Tree where
+>   fmap f Leaf = Leaf
+>   fmap f (Branch a left right) = Branch (f a) (fmap f left) (fmap f right)
 
 Problem 7:
 Define a function replicate' which given a list of numbers returns a
@@ -234,14 +239,13 @@ and adds one with another.
     > sumLsts [[1,1,1], [1,10,20], [-3, -4, -2]] [[3,5,6],[2,3,4],[2,3,2]]
     > [[4,6,7],[3,13,24],[-1,-1,0]]
 
-> sumLsts (a:as) (b:bs) = (take 1 [(+) e f | e<-a,f<-b]) ++ (sumLsts as bs)
-> sumLsts _ _ = []
-
 Use list comprehension notation to solve this problem. You may use 'zip' in
 your solution.
 What is the most general type of sumLst?
 
 Problem 8 ANSWER:
+
+> sumLsts a b = [( (zipWith (+) e f)) | (e,f)<-x] where x = zip a b
 
 Problem 9:
 Write a function, sumSingleLsts, that will take two list of lists, and adds one with another but
@@ -254,11 +258,12 @@ Use list comprehension notation to solve this problem. You may use 'zip' in
 your solution.
 What is the most general type of sumSingleLsts?
 
-
 Problem 9 ANSWER:
 
-> sumSingleLst :: (Num a) => [[a]] -> [[a]] -> [a]
-> sumSingleLst (b:bs) (c:cs) = [e + f | e<-b , f<-c]
+> sumSingleLst a b = flatten ([( (zipWith (+) e f)) | (e,f)<-x])
+>   where x = (zip a b)
+>         flatten (y:ys) = y ++ (flatten ys)
+>         flatten [] = []
 
 Problem 10: (from http://en.wikipedia.org/wiki/Thue%E2%80%93Morse_sequence )
 In previous homework 10 problem 7 you wrote a primitive recursive function to
@@ -280,3 +285,11 @@ e.g.
   [[0],[0,1],[0,1,1,0],[0,1,1,0,1,0,0,1],[0,1,1,0,1,0,0,1,1,0,0,1,0,1,1,0]]
 
 Problem 10 ANSWER:
+
+> thueSeq = [0]:[ f ++ (flipBits f) | f<-thueSeq] where flipBits fs = map negateBit fs
+>                                                       negateBit 1 = 0
+>                                                       negateBit 0 = 1
+
+
+inspired by this post
+https://stackoverflow.com/questions/34245206/circular-maps-in-haskell
