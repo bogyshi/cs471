@@ -84,7 +84,8 @@ Find operators (that can be partially applied), sec1 and sec2, so that
 has the same effect as
   filter (>0) . map (+1)
 
- 
+> sec1 = (>) 0
+> sec2 = (+) 1
 
 Problem 2:
 Remember in the first Haskell assignment problem 6 you used primitive recursion
@@ -102,7 +103,7 @@ One possible solution is
 
 Define composeHOF to be equivalent to composeList but use a 'fold?'
 
- > composeHOF :: Foldable t => t (b -> b) -> b -> b
+> composeHOF p x = foldl (.) (head(p)) (tail p) x
 
 Problem 2 Answer:
 
@@ -124,7 +125,28 @@ so-called Hamming numbers:
 
 Problem 3 Answer:
 
-Problem 4:A Define sumHarmonic using a simple recursive style:
+> merge :: (Num a, Ord a) => [a] -> [a] -> [a]
+> merge [] [] = []
+> merge (a:as) [] = a:as
+> merge [] (b:bs) = b:bs
+> merge (a:as) (b:bs)
+>   | a>b =  b:(merge (a:as) bs)
+>   | a<b = a:(merge as (b:bs))
+>   | otherwise = a:(merge as bs)
+
+> primes::[Int]
+> primes = alter [2..]
+> alter a = [y | y <- a, (fun y) == 0]
+>   where
+>   fun y
+>     | (mod y 5) == 0 = fun (div y 5)
+>     | (mod y 3) == 0 = fun (div y 3)
+>     | (mod y 2) == 0 = fun (div y 2)
+>     | (y == 1) = 0
+>     | otherwise = 1
+
+Problem 4:
+Define a sumHarmonic using a simple recursive style:
 
 The harmonic series is the following infinite series:
                             1   1   1   1               1
@@ -135,10 +157,13 @@ Write a function sumHarmonic such that sumHarmonic i is the sum of the first i
 terms of this series. For example, sumHarmonic 4 ~> 1 + 1 + 1 + 1 ~> 2.08333...
                                                         2   3   4
 
-  > sumHarmonic :: (Eq a, Fractional a) => a -> a
+  
 
 Problem 4 Answer:
 
+> sumHarmonic :: (Eq a, Fractional a) => a -> a
+> sumHarmonic a = fun2 a 1
+>   where fun2 a x = if a == x then 1/a else (1/x) + (fun2 a (x+1))
 
 Problem 5:
 Rewrite the above definition using either foldr or foldl. (i.e. figure out what ???
@@ -155,6 +180,7 @@ or
 
 Problem 5 Answer:
 
+> sumH n = foldr (\x y -> (1/x) + y) 0 [1..n]
 
 Problem 6:
  Using a fold in your solution:
@@ -168,9 +194,12 @@ Problem 6:
     False
 
 
-  > allTrue :: Foldable t => t Bool -> Bool
+ 
 
 Problem 6 Answer:
+
+> allTrue :: Foldable t => t Bool -> Bool
+> allTrue s = foldl (==) True s
 
 Problem 7.
 Using an  HOF (map, fold and/or filter ) define flattenT that returns a list of
@@ -195,6 +224,13 @@ e.g.
 
 Problem 7 Answer:
 
+
+> flattenT p = foldr (++) [] (map (\(x,y)->[x,y]) p)
+
+> flattenR p = foldl (flip (++)) [] (map (\x->[x]) (foldr (++) [] (map (\(x,y)->[x,y]) p)))
+
+
+inspired by https://stackoverflow.com/questions/46012263/fail-to-use-foldl-to-reverse-a-list-in-haskell?noredirect=1&lq=1
 
 Problem 8:  http://en.wikipedia.org/wiki/Happy_number 
 You will need to define 'sumSqr n' --  First read through this problem
@@ -221,8 +257,7 @@ ex. sqrSeq 7 = [7,49,97,130,10,1]          <- Happy number
 
 > sqrSeq n
 >  | n == 1 || n == 4 = [n]
-
-| otherwise        = n : sqrSeq (sumSqr n)
+>  | otherwise        = n : sqrSeq (sumSqr n)
 
 Below is an alternative definition for sqrSeq
 
@@ -233,7 +268,7 @@ Below is an alternative definition for sqrSeq
 > takeWhileInclusive p (x:xs) = x : if p x then takeWhileInclusive p xs
 >                                          else []
 
- sqrSeq2 n = takeWhileInclusive (\x -> x/=1 && x/=4) (iterate sumSqr n)
+> sqrSeq2 n = takeWhileInclusive (\x -> x/=1 && x/=4) (iterate sumSqr n)
 
 'isHappy' returns True if number is happy and False otherwise.  
 'isHappy' requires you to define sumSqr.
@@ -241,8 +276,7 @@ Below is an alternative definition for sqrSeq
 > isHappy n
 >  | n == 1    = True
 >  | n == 4    = False
-
-| otherwise = isHappy (sumSqr n)
+>  | otherwise = isHappy (sumSqr n)
 
 Returns a list of the digits of a number
 
@@ -254,8 +288,11 @@ Returns a list of the digits of a number
 You should define sumSqr using HOF fold, map.  You may use digit, (+) or sum, 
 and lambda expression.
 
-  sumSqr :: Integral a => a -> a
- 
- 
+
+> sumSqr :: Integral a => a -> a
+> sumSqr n = foldr (+) 0 (map (^ 2) (digits n))
+
+> sumSqr2 n = if (div n 10) == 0 then n*n else spt n
+>   where spt n = if n >= 10 then (rem n 10)^2 + (spt (div n 10)) else n*n
 
 
