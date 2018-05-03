@@ -8,14 +8,14 @@ In Lab problems a-c:
 Problem a:
 Consider the following definition:
 
-> mm f g = (.) (map f) (map g) 
+> mm f g = (.) (map f) (map g)
 
 What is the type of
    mm ((-) 20) ((+) 9) ?
 mm ((-) 20) ((+) 9) :: Num b => [b] -> [b]
 its a composition of map functions, so since they are of the same time of operation, Num -> Num, we get a list of nums transformed into another list of nums
 
-What are the values of 
+What are the values of
    mm ((-) 20) ((+) 9) [3,-2, -9, 50]
    mm ((-) 20) ((+) 9) [-3,2, -9, 50]
 [8,-13,20,-39]
@@ -33,7 +33,7 @@ Consider the following definition:
 
 > lc f p  = \lst -> [f x | x<-lst, p x]
 
-What is the type of 
+What is the type of
    lc (\n -> n -1) odd ?
 
 (\n->n-1) odd :: (Num (a -> Bool), Integral a) => a -> Bool
@@ -49,11 +49,11 @@ comprehension.
 > hf f p d = filter p (map f d)
 
 Problem c:
-'sumPRL nums', defined below, produces a list of partial sum 
-  of the numbers in nums. The first value in the resulting list 
-  will be the sum of all the items, the second will be the sum 
+'sumPRL nums', defined below, produces a list of partial sum
+  of the numbers in nums. The first value in the resulting list
+  will be the sum of all the items, the second will be the sum
   of all the items except the first, etc.  For example:
-   
+
    ...> sumPRL [3,-2,10]
    [11,8,10]
 
@@ -63,7 +63,7 @@ Problem c:
 >    sums as []  = as
 
 
-Define sumPRLHOF to be equivalent to sumPRL but using a fold.  
+Define sumPRLHOF to be equivalent to sumPRL but using a fold.
 I have started the sumPRLHOF definition, you only need to
 complete the definition for f.
 
@@ -74,7 +74,7 @@ Remember foldr can be defined as follows:
 
    > foldr :: (a -> b -> b) -> b -> [a] -> b
    > foldr f acc [] = acc
-   > foldr f acc (x:xs) = f x  (foldr f acc xs) 
+   > foldr f acc (x:xs) = f x  (foldr f acc xs)
 
 
 ----------------------  HW ----------------------
@@ -89,14 +89,14 @@ has the same effect as
 
 Problem 2:
 Remember in the first Haskell assignment problem 6 you used primitive recursion
-to define a function composeList.   composeList took a list of functions 
+to define a function composeList.   composeList took a list of functions
 and composed them.  e.g.
 
    ... >composeList [ (-) 3 , (*) 2, (+)5 ] 7
        -21
 
 
-One possible solution is 
+One possible solution is
 
 > composeList [] = id
 > composeList (h:t) = (.) h  composeList t
@@ -116,12 +116,12 @@ so-called Hamming numbers:
 
 
  You may consider using any combinition of the following techiques
-       to express your solution  list comprehension notation, 
-       and/or explicit recursion, and/or local definitions .  
+       to express your solution  list comprehension notation,
+       and/or explicit recursion, and/or local definitions .
        You may 'merge' defined in the last homework useful.
 
 (Hint: Apply the circular list idea demostrated in fibSeq
-  (http://bingweb.binghamton.edu/%7Ehead/CS471/NOTES/HASKELL/4hF02.html)) 
+  (http://bingweb.binghamton.edu/%7Ehead/CS471/NOTES/HASKELL/4hF02.html))
 
 Problem 3 Answer:
 
@@ -134,8 +134,8 @@ Problem 3 Answer:
 >   | a<b = a:(merge as (b:bs))
 >   | otherwise = a:(merge as bs)
 
-> primes::[Int]
-> primes = alter [2..]
+> hamming:[Int]
+> hamming = alter [2..]
 > alter a = [y | y <- a, (fun y) == 0]
 >   where
 >   fun y
@@ -157,7 +157,7 @@ Write a function sumHarmonic such that sumHarmonic i is the sum of the first i
 terms of this series. For example, sumHarmonic 4 ~> 1 + 1 + 1 + 1 ~> 2.08333...
                                                         2   3   4
 
-  
+
 
 Problem 4 Answer:
 
@@ -169,9 +169,9 @@ Problem 5:
 Rewrite the above definition using either foldr or foldl. (i.e. figure out what ???
 should be)
   sumH n = foldr ??? 0 [1..n]
-or 
+or
   sumH n = foldl ??? 0 [1..n]
-  
+
    ...> sumHarmonic 20
    3.59773965714368
    ...> sumH n
@@ -184,7 +184,7 @@ Problem 5 Answer:
 
 Problem 6:
  Using a fold in your solution:
-  Define  "allTrue" to evaluate a list of expression of Bools to True if all 
+  Define  "allTrue" to evaluate a list of expression of Bools to True if all
    the expression in a list are true.  Provide two test cases.  Do not have an
    explicit parameters.  (i.e. allTrue = ???)
    eg:
@@ -194,32 +194,31 @@ Problem 6:
     False
 
 
- 
+
 
 Problem 6 Answer:
 
-> allTrue :: Foldable t => t Bool -> Bool
 > allTrue s = foldl (==) True s
 
 Problem 7.
 Using an  HOF (map, fold and/or filter ) define flattenT that returns a list of
 value in each tuple. flattenT :: Foldable t => t (a, a) -> [a]
-  
 
- 7a) The output should be in the same order as the values appear in the 
+
+ 7a) The output should be in the same order as the values appear in the
      original list.
 e.g.
 
-   ...> flattenT  [(1,2), (3,4), (11,21),(-5,45)] 
+   ...> flattenT  [(1,2), (3,4), (11,21),(-5,45)]
    [1,2,3,4,11,21,-5,45]
 
- 
+
 
  7b) flattenR is the same as 7a, however, the values appear in the reverse order
-   from the original list. Do not use the builtin reverse. 
+   from the original list. Do not use the builtin reverse.
    flattenR :: Foldable t => t (a, a) -> [a]
 e.g.
-   ...> flattenR  [(1,2), (3,4), (11,21),(-5,45)] 
+   ...> flattenR  [(1,2), (3,4), (11,21),(-5,45)]
    [45,-5,21,11,4,3,2,1]
 
 Problem 7 Answer:
@@ -232,20 +231,20 @@ Problem 7 Answer:
 
 inspired by https://stackoverflow.com/questions/46012263/fail-to-use-foldl-to-reverse-a-list-in-haskell?noredirect=1&lq=1
 
-Problem 8:  http://en.wikipedia.org/wiki/Happy_number 
+Problem 8:  http://en.wikipedia.org/wiki/Happy_number
 You will need to define 'sumSqr n' --  First read through this problem
 
 
-A happy number is defined by the following process. Starting with any positive integer, replace 
-the number by the sum of the squares of its digits, and repeat the process until the number 
-equals 1 (where it will stay), or it loops endlessly in a cycle which does not include 1. 
+A happy number is defined by the following process. Starting with any positive integer, replace
+the number by the sum of the squares of its digits, and repeat the process until the number
+equals 1 (where it will stay), or it loops endlessly in a cycle which does not include 1.
 
-Those numbers for which this process ends in 1 are happy numbers, If n is not happy (or sad), 
+Those numbers for which this process ends in 1 are happy numbers, If n is not happy (or sad),
 then its sequence does not go to 1. Instead, it ends in the cycle:
          4, 16, 37, 58, 89, 145, 42, 20, 4, ...
 
 'happySeq' defined below creates a sequence of 'happy numbers'.
- 
+
 > happySeq = filter isHappy [1..]
 
   ...>  take 10 happySeq
@@ -261,7 +260,7 @@ ex. sqrSeq 7 = [7,49,97,130,10,1]          <- Happy number
 
 Below is an alternative definition for sqrSeq
 
-(need takeWhile will not work because we need to include 1 or 4)  
+(need takeWhile will not work because we need to include 1 or 4)
 
 > takeWhileInclusive :: (a -> Bool) -> [a] -> [a]
 > takeWhileInclusive _ [] = []
@@ -270,7 +269,7 @@ Below is an alternative definition for sqrSeq
 
 > sqrSeq2 n = takeWhileInclusive (\x -> x/=1 && x/=4) (iterate sumSqr n)
 
-'isHappy' returns True if number is happy and False otherwise.  
+'isHappy' returns True if number is happy and False otherwise.
 'isHappy' requires you to define sumSqr.
 
 > isHappy n
@@ -284,8 +283,8 @@ Returns a list of the digits of a number
 >  | n < 10    = [n]
 >  | otherwise = (mod n 10) : digits (div n 10)
 
-  
-You should define sumSqr using HOF fold, map.  You may use digit, (+) or sum, 
+
+You should define sumSqr using HOF fold, map.  You may use digit, (+) or sum,
 and lambda expression.
 
 
@@ -294,5 +293,3 @@ and lambda expression.
 
 > sumSqr2 n = if (div n 10) == 0 then n*n else spt n
 >   where spt n = if n >= 10 then (rem n 10)^2 + (spt (div n 10)) else n*n
-
-
